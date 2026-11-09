@@ -1,0 +1,127 @@
+@page "/"
+@using Microsoft.AspNetCore.Components
+
+<PageTitle>Tournaments, made simple · Bracketly</PageTitle>
+
+<div class="landing-page" id="top">
+    <header class="site-header">
+        <Logo />
+        <nav class="primary-nav" aria-label="Main navigation">
+            <a href="#top">Discover</a>
+            <a href="#tournaments">Tournaments</a>
+            <a href="#organizers">For organizers</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <span class="eyebrow-pill">TOURNAMENTS, MADE SIMPLE</span>
+                <h1 id="hero-title">Tournaments,<br />made simple.</h1>
+                <p class="hero-description">Discover events, build brackets, and keep every match moving—in one place.</p>
+                <div class="hero-actions">
+                    <a class="button button-accent" href="#tournaments">Explore tournaments</a>
+                    <a class="button button-secondary" href="/register">Create a tournament</a>
+                </div>
+                <div class="social-proof">
+                    <div class="avatar-stack" aria-hidden="true">
+                        <img src="/images/bracketly/@(Theme)/trust-avatar-1.svg" alt="" />
+                        <img src="/images/bracketly/@(Theme)/trust-avatar-2.svg" alt="" />
+                        <img src="/images/bracketly/@(Theme)/trust-avatar-3.svg" alt="" />
+                    </div>
+                    <span>Built for the people who make game day happen.</span>
+                </div>
+            </div>
+
+            <article class="tournament-preview" aria-label="Featured live tournament preview">
+                <div class="preview-bloom" aria-hidden="true">
+                    <img class="preview-bloom-outer" src="/images/bracketly/@(Theme)/preview-bloom.svg" alt="" />
+                    <img class="preview-bloom-core" src="/images/bracketly/@(Theme)/preview-bloom-core.svg" alt="" />
+                </div>
+                <span class="eyebrow-pill preview-live">UP NEXT · LIVE IN 2H</span>
+                <h2>Sunday 5v5 Cup</h2>
+                <p class="preview-meta">Community league <span>·</span> 12 teams</p>
+                <div class="match-card">
+                    <p class="match-label">SEMIFINAL <span>·</span> COURT A</p>
+                    <div class="match-scoreline">
+                        <span class="team-badge team-a">N</span>
+                        <span class="team-name">Northside</span>
+                        <strong class="team-score">2</strong>
+                        <span class="versus">VS</span>
+                        <strong class="team-score">1</strong>
+                        <span class="team-name team-name-right">East End</span>
+                        <span class="team-badge team-b">E</span>
+                    </div>
+                    <div class="score-track" aria-label="Northside leads 2 to 1"><span></span></div>
+                    <a class="bracket-link" href="#tournaments">View live bracket</a>
+                </div>
+                <div class="progress-card">
+                    <span>12 of 16 teams</span>
+                    <div class="team-progress" aria-label="12 of 16 teams registered"><span></span></div>
+                    <span class="prize-pool">$1,200 prize pool</span>
+                </div>
+                <img class="preview-decor" src="/images/bracketly/@(Theme)/abstract-decor-circle.svg" alt="" aria-hidden="true" />
+            </article>
+        </section>
+
+        <section class="stats-strip" aria-label="Bracketly in numbers">
+            <div class="stat"><strong>12k+</strong><span>Players</span></div>
+            <div class="stat"><strong>1.8k</strong><span>Tournaments hosted</span></div>
+            <div class="stat"><strong>42</strong><span>Countries</span></div>
+            <div class="stat"><strong>4.9 / 5</strong><span>Organizer rating</span></div>
+        </section>
+
+        <section class="events-section" id="tournaments" aria-labelledby="events-heading">
+            <p class="section-eyebrow">PICK YOUR NEXT CHALLENGE</p>
+            <div class="section-heading-row">
+                <h2 id="events-heading">Find your next tournament</h2>
+                <a href="#tournaments">Explore all events <span aria-hidden="true">→</span></a>
+            </div>
+
+            <div class="event-grid">
+                <article class="event-card">
+                    <div class="event-art event-art-valorant" aria-hidden="true">
+                        <span class="event-bracket-horizontal"></span><span class="event-bracket-vertical"></span>
+                        <img class="event-orbit" src="/images/bracketly/@(Theme)/event-orbit.svg" alt="" />
+                        <img class="event-orbit-core" src="/images/bracketly/@(Theme)/event-orbit-core.svg" alt="" />
+                    </div>
+                    <span class="event-tag event-tag-purple">VALORANT</span>
+                    <h3>Open Invitational</h3>
+                    <p>48 / 64 players <span>·</span> Oct 24</p>
+                </article>
+                <article class="event-card">
+                    <div class="event-art event-art-football" aria-hidden="true">
+                        <img class="event-circle" src="/images/bracketly/@(Theme)/event-circle.svg" alt="" />
+                        <span class="event-diagonal"></span>
+                        <img class="event-marker" src="/images/bracketly/@(Theme)/event-marker.svg" alt="" />
+                        <img class="event-marker-core" src="/images/bracketly/@(Theme)/event-marker-core.svg" alt="" />
+                    </div>
+                    <span class="event-tag event-tag-green">FOOTBALL</span>
+                    <h3>City Futsal Series</h3>
+                    <p>12 teams · Free entry <span>·</span> Oct 26</p>
+                </article>
+                <article class="event-card">
+                    <div class="event-art event-art-chess" aria-hidden="true">
+                        <span class="chess-block chess-block-one"></span><span class="chess-block chess-block-two"></span>
+                        <img class="event-dot" src="/images/bracketly/@(Theme)/event-dot.svg" alt="" />
+                    </div>
+                    <span class="event-tag event-tag-purple">CHESS</span>
+                    <h3>Campus Chess Open</h3>
+                    <p>Swiss tournament <span>·</span> Nov 02</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="organizer-cta" id="organizers">
+            <div>
+                <h2>Ready to run your next event?</h2>
+                <p>Build a bracket, invite your players, and keep every result in sync.</p>
+            </div>
+            <a class="button button-secondary" href="/register">Create a tournament</a>
+        </section>
+    </main>
+</div>
+
+@code {
+    [CascadingParameter(Name = "Theme")] public string Theme { get; set; } = "light";
+}

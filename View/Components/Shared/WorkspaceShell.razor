@@ -1,0 +1,43 @@
+@using Model
+@inject UserSession Session
+
+<div class="workspace-layout">
+    <aside class="workspace-sidebar">
+        <a class="workspace-brand" href="@HomePath" aria-label="Bracketly home"><span class="brand-mark">B</span><span>bracketly</span></a>
+        <div class="workspace-side-label">WORKSPACE</div>
+        <span class="workspace-role">@Session.RoleName</span>
+        <nav class="workspace-nav" aria-label="Workspace navigation">
+            <NavLink href="@HomePath" Match="NavLinkMatch.All"><span>⌂</span> Overview</NavLink>
+            <NavLink href="@($"{HomePath}/tournaments")"><span>◇</span> Tournaments</NavLink>
+            @if (Session.RoleName == UserRoles.SuperAdmin)
+            {
+                <NavLink href="/admin/users"><span>◎</span> Users</NavLink>
+            }
+            @if (Session.RoleName == UserRoles.Host || Session.RoleName == UserRoles.Player)
+            {
+                <NavLink href="@($"{HomePath}/teams")"><span>◉</span> Teams</NavLink>
+            }
+        </nav>
+        @if (Session.RoleName == UserRoles.Guest)
+        {
+            <div class="workspace-sidebar-cta"><strong>Ready to play?</strong><span>Create an account to join a team.</span><a href="/register">Get started <b aria-hidden="true">→</b></a></div>
+        }
+        <div class="workspace-sidebar-footer"><span class="sidebar-avatar">@Initials</span><div><strong>@Session.Username</strong><small>@Session.RoleName</small></div></div>
+    </aside>
+    <section class="workspace-main">
+        <header class="workspace-heading">
+            <div><p class="workspace-heading-label">@Session.RoleName / Overview</p><h1>@Title</h1><p>@Subtitle</p></div>
+            <span class="workspace-heading-avatar" aria-hidden="true">@Initials</span>
+        </header>
+        <main class="workspace-content">@ChildContent</main>
+    </section>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string Subtitle { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+
+    private string HomePath => RoleHomePath.For(Session.RoleName);
+    private string Initials => string.Join(string.Empty, Session.Username.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(part => char.ToUpperInvariant(part[0])));
+}

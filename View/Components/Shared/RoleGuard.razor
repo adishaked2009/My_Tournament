@@ -1,0 +1,45 @@
+@implements IDisposable
+@inject UserSession Session
+@inject NavigationManager Navigation
+
+@if (IsAllowed)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter, EditorRequired] public string[] AllowedRoles { get; set; } = [];
+    [Parameter, EditorRequired] public RenderFragment? ChildContent { get; set; }
+
+    private bool IsAllowed => Session.IsLoggedIn
+        && AllowedRoles.Contains(Session.RoleName, StringComparer.OrdinalIgnoreCase);
+
+    protected override void OnInitialized()
+    {
+        Session.OnChange += OnSessionChanged;
+        RedirectIfDenied();
+    }
+
+    private void RedirectIfDenied()
+    {
+        if (!Session.IsLoggedIn)
+        {
+            Navigation.NavigateTo("/login");
+        }
+        else if (!AllowedRoles.Contains(Session.RoleName, StringComparer.OrdinalIgnoreCase))
+        {
+            Navigation.NavigateTo("/no-permission");
+        }
+    }
+
+    private void OnSessionChanged()
+    {
+        _ = InvokeAsync(() =>
+        {
+            RedirectIfDenied();
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose() => Session.OnChange -= OnSessionChanged;
+}

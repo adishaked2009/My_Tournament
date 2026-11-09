@@ -1,0 +1,66 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject UserSession Session
+@inject NavigationManager Navigation
+
+<CascadingValue Value="Theme" Name="Theme">
+    <div class="app-shell" data-theme="@Theme">
+        <header class="session-bar" aria-label="Account">
+            <div class="session-bar-inner">
+                @if (Session.IsLoggedIn)
+                {
+                    <span>Hello, <strong>@Session.Username</strong></span>
+                    <a class="button button-secondary" href="@RoleHomePath.For(Session.RoleName)">My home</a>
+                    <button class="button button-secondary" type="button" @onclick="Logout">Sign out</button>
+                }
+                else
+                {
+                    <span>Hello, guest</span>
+                    <a class="button button-secondary" href="/login">Sign in</a>
+                    <a class="button button-accent" href="/register">Create account</a>
+                }
+            </div>
+        </header>
+        <button class="theme-toggle" type="button" @onclick="ToggleTheme" aria-label="Switch to @(Theme == "light" ? "dark" : "light") mode" title="Switch to @(Theme == "light" ? "dark" : "light") mode">
+            @if (Theme == "light")
+            {
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 15.2A8.5 8.5 0 0 1 8.8 3.9 8.6 8.6 0 1 0 20.1 15.2Z" /></svg>
+            }
+            else
+            {
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.6" /><path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56m11.02 11.02 1.56 1.56M2 12h2.2m15.6 0H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56" /></svg>
+            }
+        </button>
+        @Body
+    </div>
+</CascadingValue>
+
+@code {
+    private string Theme { get; set; } = "light";
+
+    protected override void OnInitialized()
+    {
+        Session.OnChange += OnSessionChanged;
+    }
+
+    private void OnSessionChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void Logout()
+    {
+        Session.Logout();
+        Navigation.NavigateTo("");
+    }
+
+    public void Dispose()
+    {
+        Session.OnChange -= OnSessionChanged;
+    }
+
+    private void ToggleTheme()
+    {
+        Theme = Theme == "light" ? "dark" : "light";
+    }
+}

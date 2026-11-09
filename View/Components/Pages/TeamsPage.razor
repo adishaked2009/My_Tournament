@@ -1,0 +1,19 @@
+@page "/host/teams"
+@page "/player/teams"
+@using Model
+@inject UserSession Session
+
+<PageTitle>Teams · Bracketly</PageTitle>
+<RoleGuard AllowedRoles="@(new[] { UserRoles.Host, UserRoles.Player })">
+    <WorkspaceShell Title="@(Session.RoleName == UserRoles.Host ? "Registered teams" : "My teams")" Subtitle="@(Session.RoleName == UserRoles.Host ? "Review the teams competing in your events." : "Your roster and recent team activity.")">
+        <div class="workspace-eyebrow">TEAM SPACE</div>
+        <section class="workspace-panel">
+            <div class="workspace-panel-heading"><div><span class="panel-kicker">@(Session.RoleName == UserRoles.Host ? "SUNDAY 5V5 CUP" : "YOUR ROSTER")</span><h2>@(Session.RoleName == UserRoles.Host ? "Teams in your tournaments" : "Northside FC")</h2></div><span class="status-pill status-live">@(Session.RoleName == UserRoles.Host ? "12 teams" : "Active team")</span></div>
+            <div class="team-roster-row"><span class="roster-avatar">JL</span><div class="event-list-copy"><strong>Jordan Lee</strong><span>Captain · Northside FC</span></div><span class="role-chip">Captain</span></div>
+            <div class="team-roster-row"><span class="roster-avatar avatar-purple">AR</span><div class="event-list-copy"><strong>Alex Rivera</strong><span>Midfield · Northside FC</span></div><span class="role-chip">Player</span></div>
+            <div class="team-roster-row"><span class="roster-avatar avatar-orange">MK</span><div class="event-list-copy"><strong>Morgan Kim</strong><span>Goalkeeper · Northside FC</span></div><span class="role-chip">Player</span></div>
+        </section>
+        <section class="workspace-panel team-event-panel"><div class="workspace-panel-heading"><div><span class="panel-kicker">UPCOMING</span><h2>Sunday 5v5 Cup</h2></div><span class="event-list-count">Semifinal · Nov 5</span></div><p class="team-panel-copy">Northside FC faces East End tomorrow at 6:30 PM on Court A.</p></section>
+        <p class="mock-data-note">Sample roster for stage 9 · team management is visual only.</p>
+    </WorkspaceShell>
+</RoleGuard>

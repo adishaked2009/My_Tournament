@@ -1,0 +1,38 @@
+<div class="field-group">
+    <label for="@Id" class="field-label">@Label</label>
+    <div class="field-control-wrap">
+        <input id="@Id" class="field-control" type="@InputType" dir="@Dir" placeholder="@Placeholder"
+               autocomplete="@Autocomplete" required="@Required" value="@Value" @oninput="OnInput" />
+        @if (Type == "password")
+        {
+            <button type="button" class="password-toggle" aria-label="@(ShowPassword ? "Hide password" : "Show password")" @onclick="TogglePassword">
+                @if (ShowPassword)
+                {
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.7a2 2 0 0 0 2.7 2.7M9.9 5.2A10.8 10.8 0 0 1 12 5c5.1 0 8.5 4.4 9.5 6-.4.6-1.5 2.2-3.4 3.6M6.2 6.2C4.4 7.4 3.3 9 2.5 11c1 1.6 4.4 6 9.5 6 1.1 0 2.1-.2 3-.5" /></svg>
+                }
+                else
+                {
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-7 9.5-7 9.5 7 9.5 7-3.4 7-9.5 7-9.5-7-9.5-7Z" /><circle cx="12" cy="12" r="2.5" /></svg>
+                }
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = string.Empty;
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string Dir { get; set; } = "ltr";
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public string Autocomplete { get; set; } = "off";
+    [Parameter] public bool Required { get; set; }
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+    private bool ShowPassword { get; set; }
+    private string InputType => Type == "password" && ShowPassword ? "text" : Type;
+
+    private Task OnInput(ChangeEventArgs args) => ValueChanged.InvokeAsync(args.Value?.ToString() ?? string.Empty);
+    private void TogglePassword() => ShowPassword = !ShowPassword;
+}

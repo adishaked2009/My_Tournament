@@ -1,0 +1,55 @@
+<div class="auth-shell">
+    <section class="auth-brand-panel" aria-label="About Bracketly">
+        <Logo />
+        <span class="eyebrow-pill auth-brand-tag">@BrandTag</span>
+        <h1 class="auth-brand-headline">@BrandHeadline</h1>
+        <p class="auth-brand-description">@BrandDescription</p>
+
+        <div class="auth-bracket-art" aria-hidden="true">
+            <div class="bracket-card-surface"></div>
+            <span class="bracket-line bracket-line-top"></span>
+            <span class="bracket-line bracket-line-left"></span>
+            <span class="bracket-line bracket-line-bottom"></span>
+            <span class="bracket-line bracket-line-right"></span>
+            <img class="bracket-team bracket-team-one" src="/images/bracketly/@(Theme)/bracket-team.svg" alt="" />
+            <img class="bracket-team bracket-team-two" src="/images/bracketly/@(Theme)/bracket-team.svg" alt="" />
+            <img class="bracket-team bracket-team-three" src="/images/bracketly/@(Theme)/bracket-team.svg" alt="" />
+            <img class="auth-orbit" src="/images/bracketly/@(Theme)/auth-orbit.svg" alt="" />
+            <img class="auth-orbit-core" src="/images/bracketly/@(Theme)/auth-orbit-core.svg" alt="" />
+            <span class="finalist-chip">FINAL</span>
+        </div>
+        <p class="auth-social-proof">12,000+ players. Thousands of tournaments.</p>
+        <span class="auth-accent-block" aria-hidden="true"></span>
+    </section>
+
+    <section class="auth-form-panel" aria-label="Account form">
+        <div class="auth-form-inner">
+            <p class="auth-form-eyebrow">@FormEyebrow</p>
+            <h2>@FormTitle</h2>
+            <p class="auth-form-description">@FormDescription</p>
+            <button type="button" class="google-button" @onclick="OnGoogleSignIn">
+                <span class="google-g" aria-hidden="true">G</span>
+                <span>Continue with Google</span>
+            </button>
+            <div class="email-divider"><span>OR CONTINUE WITH EMAIL</span><i></i></div>
+            @ChildContent
+            <p class="auth-prompt"><span>@Prompt</span> <a href="@PromptHref">@PromptLink</a></p>
+        </div>
+        <p class="auth-legal">© 2026 Bracketly <span>·</span> <a href="#privacy" @onclick:preventDefault="true">Privacy</a> <span>·</span> <a href="#terms" @onclick:preventDefault="true">Terms</a></p>
+    </section>
+</div>
+
+@code {
+    [Parameter] public string Theme { get; set; } = "light";
+    [Parameter] public string BrandTag { get; set; } = string.Empty;
+    [Parameter] public string BrandHeadline { get; set; } = string.Empty;
+    [Parameter] public string BrandDescription { get; set; } = string.Empty;
+    [Parameter] public string FormEyebrow { get; set; } = string.Empty;
+    [Parameter] public string FormTitle { get; set; } = string.Empty;
+    [Parameter] public string FormDescription { get; set; } = string.Empty;
+    [Parameter] public string Prompt { get; set; } = string.Empty;
+    [Parameter] public string PromptLink { get; set; } = string.Empty;
+    [Parameter] public string PromptHref { get; set; } = string.Empty;
+    [Parameter] public EventCallback OnGoogleSignIn { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

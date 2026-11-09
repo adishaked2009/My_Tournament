@@ -1,0 +1,28 @@
+@page "/admin"
+@using Model
+
+<PageTitle>Administrator dashboard · Bracketly</PageTitle>
+<RoleGuard AllowedRoles="@(new[] { UserRoles.SuperAdmin })">
+    <WorkspaceShell Title="Site overview" Subtitle="Here’s what’s happening across Bracketly today.">
+        <div class="workspace-eyebrow">SUPER ADMIN WORKSPACE</div>
+        <section class="metric-grid" aria-label="Site overview">
+            <article class="metric-card"><span>Registered players</span><strong>12,480</strong><small class="metric-positive">↑ 8.4% this month</small></article>
+            <article class="metric-card"><span>Active tournaments</span><strong>32</strong><small>Across 8 countries</small></article>
+            <article class="metric-card"><span>Pending review</span><strong>04</strong><small class="metric-attention">Needs your attention</small></article>
+        </section>
+        <section class="workspace-panel">
+            <div class="workspace-panel-heading"><div><span class="panel-kicker">LATEST ACTIVITY</span><h2>Recently joined players</h2></div><a class="text-link" href="/admin/users">View all users <span aria-hidden="true">→</span></a></div>
+            <div class="table-responsive"><table class="workspace-table"><thead><tr><th>Player</th><th>Role</th><th>Joined</th><th>Status</th></tr></thead><tbody>
+                <tr><td><strong>Jordan Lee</strong><small>jordan.lee@example.com</small></td><td><span class="role-chip">Player</span></td><td>Today</td><td><span class="status-dot status-active">Active</span></td></tr>
+                <tr><td><strong>Sam Rivera</strong><small>sam.rivera@example.com</small></td><td><span class="role-chip role-chip-purple">Host</span></td><td>Yesterday</td><td><span class="status-dot status-active">Active</span></td></tr>
+                <tr><td><strong>Casey Morgan</strong><small>casey.morgan@example.com</small></td><td><span class="role-chip">Player</span></td><td>Oct 28</td><td><span class="status-dot status-pending">Review</span></td></tr>
+            </tbody></table></div>
+        </section>
+        <section class="quick-link-grid">
+            <a class="quick-link-card" href="/admin/users"><span class="quick-link-icon">◎</span><strong>Manage users</strong><span>Review roles and account status <b aria-hidden="true">→</b></span></a>
+            <a class="quick-link-card" href="/admin/tournaments"><span class="quick-link-icon quick-link-icon-purple">◇</span><strong>All tournaments</strong><span>Monitor events across the site <b aria-hidden="true">→</b></span></a>
+        </section>
+    </WorkspaceShell>
+</RoleGuard>
+
+@code { [Inject] private UserSession Session { get; set; } = default!; }

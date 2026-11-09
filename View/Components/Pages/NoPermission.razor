@@ -1,0 +1,16 @@
+@page "/no-permission"
+@inject UserSession Session
+@inject NavigationManager Navigation
+
+<PageTitle>No permission · Bracketly</PageTitle>
+<main class="container py-5">
+    <p class="eyebrow-pill">ACCESS RESTRICTED</p>
+    <h1>You don't have permission to view this page</h1>
+    <p>Your account role (@Session.RoleName) doesn't allow access to this page.</p>
+    <button class="button button-accent" type="button" @onclick="GoToHome">Go to my home page</button>
+</main>
+
+@code {
+    private void GoToHome() => Navigation.NavigateTo(
+        Session.IsLoggedIn ? RoleHomePath.For(Session.RoleName) : "/login");
+}

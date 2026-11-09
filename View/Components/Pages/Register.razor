@@ -1,0 +1,136 @@
+@page "/register"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@using System.Net.Mail
+@using Model
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+<PageTitle>Create your account · Bracketly</PageTitle>
+
+<AuthLayout Theme="@Theme"
+            BrandTag="START PLAYING"
+            BrandHeadline="Make every match count."
+            BrandDescription="Join players and organizers building better tournaments together."
+            FormEyebrow="GET STARTED"
+            FormTitle="Create your account"
+            FormDescription="Create your free account in less than a minute."
+            Prompt="Already have an account?"
+            PromptLink="Sign in"
+            PromptHref="/login"
+            OnGoogleSignIn="HandleGoogleSignIn">
+    <form class="auth-form" @onsubmit="RegisterAsync" @onsubmit:preventDefault="true">
+        <Field Id="register-name" Label="Username" Type="text" Placeholder="alexmorgan" Autocomplete="username" Required="true" @bind-Value="_name" />
+        <Field Id="register-email" Label="Email address" Type="email" Placeholder="you@example.com" Autocomplete="email" Required="true" @bind-Value="_email" />
+        <Field Id="register-password" Label="Password" Type="password" Placeholder="••••••••••" Autocomplete="new-password" Required="true" @bind-Value="_password" />
+        <Field Id="register-confirm-password" Label="Confirm password" Type="password" Placeholder="••••••••••" Autocomplete="new-password" Required="true" @bind-Value="_confirmPassword" />
+        <p class="terms-copy">By creating an account, you agree to our <a href="#terms" @onclick:preventDefault="true">Terms of Service</a> and <a href="#privacy" @onclick:preventDefault="true">Privacy Policy</a>.</p>
+        <button class="button button-accent auth-submit" type="submit" disabled="@(_isBusy || _isRegistered)">
+            @(_isBusy ? "Creating account..." : "Create free account")
+        </button>
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <p class="auth-status" role="alert">@_errorMessage</p>
+        }
+        @if (_isRegistered)
+        {
+            <p class="auth-status" role="status">Account created. Redirecting to sign in in @_secondsLeft seconds.</p>
+        }
+    </form>
+</AuthLayout>
+
+@code {
+    [CascadingParameter(Name = "Theme")] public string Theme { get; set; } = "light";
+
+    private string _name = string.Empty;
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private string _confirmPassword = string.Empty;
+    private string? _errorMessage;
+    private bool _isBusy;
+    private bool _isRegistered;
+    private int _secondsLeft = 5;
+
+    private async Task RegisterAsync()
+    {
+        _errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(_name) || string.IsNullOrWhiteSpace(_email)
+            || string.IsNullOrWhiteSpace(_password) || string.IsNullOrWhiteSpace(_confirmPassword))
+        {
+            _errorMessage = "Please complete all fields.";
+            return;
+        }
+
+        if (!MailAddress.TryCreate(_email.Trim(), out _))
+        {
+            _errorMessage = "Please enter a valid email address.";
+            return;
+        }
+
+        if (_password != _confirmPassword)
+        {
+            _errorMessage = "Password and confirmation do not match.";
+            return;
+        }
+
+        _isBusy = true;
+        try
+        {
+            string username = _name.Trim();
+            string email = _email.Trim();
+            bool usernameExists = await Http.GetFromJsonAsync<bool>(
+                $"api/users/exists/{Uri.EscapeDataString(username)}");
+            if (usernameExists)
+            {
+                _errorMessage = "That username is already taken. Please choose another.";
+                return;
+            }
+
+            bool emailExists = await Http.GetFromJsonAsync<bool>(
+                $"api/users/email-exists/{Uri.EscapeDataString(email)}");
+            if (emailExists)
+            {
+                _errorMessage = "That email address is already registered.";
+                return;
+            }
+
+            var newUser = new User(username, email, _password);
+            using HttpResponseMessage response = await Http.PostAsJsonAsync("api/users", newUser);
+            if (!response.IsSuccessStatusCode)
+            {
+                _errorMessage = response.StatusCode switch
+                {
+                    System.Net.HttpStatusCode.Conflict => "That username or email is already registered.",
+                    System.Net.HttpStatusCode.BadRequest => "The server could not read the registration details.",
+                    _ => $"Registration failed (HTTP {(int)response.StatusCode}). Check the API output for details."
+                };
+                return;
+            }
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "The server is unavailable right now. Please try again shortly.";
+            return;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+
+        _isRegistered = true;
+        while (_secondsLeft > 0)
+        {
+            StateHasChanged();
+            await Task.Delay(1000);
+            _secondsLeft--;
+        }
+
+        Navigation.NavigateTo("login");
+    }
+
+    private void HandleGoogleSignIn()
+    {
+        _errorMessage = "Google sign-in is not connected yet.";
+    }
+}

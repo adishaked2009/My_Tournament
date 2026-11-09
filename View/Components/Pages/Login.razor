@@ -1,0 +1,117 @@
+@page "/login"
+@using System.Net
+@using Model
+@inject HttpClient Http
+@inject UserSession Session
+@inject NavigationManager Navigation
+
+<PageTitle>Sign in · Bracketly</PageTitle>
+
+<AuthLayout Theme="@Theme"
+            BrandTag="YOUR TOURNAMENT HQ"
+            BrandHeadline="Good to see you again."
+            BrandDescription="Pick up where your team left off. Your next great run starts with one sign-in."
+            FormEyebrow="SIGN IN"
+            FormTitle="Welcome back"
+            FormDescription="Sign in to manage your team and tournaments."
+            Prompt="New to Bracketly?"
+            PromptLink="Create an account"
+            PromptHref="/register"
+            OnGoogleSignIn="HandleGoogleSignIn">
+    <form class="auth-form" @onsubmit="LoginAsync" @onsubmit:preventDefault="true">
+        <Field Id="login-username" Label="Username" Type="text" Placeholder="your username" Autocomplete="username" Required="true" @bind-Value="_username" />
+        <Field Id="login-password" Label="Password" Type="password" Placeholder="••••••••••" Autocomplete="current-password" Required="true" @bind-Value="_password" />
+        <div class="remember-row">
+            <label class="remember-control" for="remember-me">
+                <input id="remember-me" type="checkbox" @bind="_rememberMe" />
+                <span>Remember me</span>
+            </label>
+            <a href="#forgot-password" @onclick:preventDefault="true" @onclick="ShowForgotPassword">Forgot password?</a>
+        </div>
+        <button class="button button-accent auth-submit" type="submit" disabled="@_isBusy">
+            @(_isBusy ? "Signing in..." : "Sign in")
+        </button>
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <p class="auth-status" role="alert">@_errorMessage</p>
+        }
+    </form>
+</AuthLayout>
+
+@code {
+    [CascadingParameter(Name = "Theme")] public string Theme { get; set; } = "light";
+
+    private string _username = string.Empty;
+    private string _password = string.Empty;
+    private bool _rememberMe;
+    private bool _isBusy;
+    private string? _errorMessage;
+
+    private async Task LoginAsync()
+    {
+        _errorMessage = null;
+        if (string.IsNullOrWhiteSpace(_username) || string.IsNullOrWhiteSpace(_password))
+        {
+            _errorMessage = "Please enter your username and password.";
+            return;
+        }
+
+        _isBusy = true;
+        try
+        {
+            var credentials = new LoginRequest
+            {
+                Username = _username.Trim(),
+                Password = _password
+            };
+            using HttpResponseMessage response = await Http.PostAsJsonAsync("api/users/login", credentials);
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                _errorMessage = "The username or password is incorrect.";
+                return;
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _errorMessage = $"Sign-in failed (HTTP {(int)response.StatusCode}). Please try again.";
+                return;
+            }
+
+            UserSessionInfo? user = await response.Content.ReadFromJsonAsync<UserSessionInfo>();
+            if (user is null)
+            {
+                _errorMessage = "Sign-in failed. Please try again.";
+                return;
+            }
+
+            Session.Login(user);
+        }
+        catch (HttpRequestException)
+        {
+            _errorMessage = "The server is unavailable right now. Please try again shortly.";
+            return;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+
+        Navigation.NavigateTo(RoleHomePath.For(Session.RoleName));
+    }
+
+    private void HandleGoogleSignIn()
+    {
+        _errorMessage = "Google sign-in is not connected yet.";
+    }
+
+    private void ShowForgotPassword()
+    {
+        _errorMessage = "Password recovery is not connected yet.";
+    }
+
+    private sealed class LoginRequest
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}

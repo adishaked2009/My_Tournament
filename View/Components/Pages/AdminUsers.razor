@@ -1,0 +1,21 @@
+@page "/admin/users"
+@using Model
+
+<PageTitle>Users · Bracketly</PageTitle>
+<RoleGuard AllowedRoles="@(new[] { UserRoles.SuperAdmin })">
+    <WorkspaceShell Title="User directory" Subtitle="Review accounts, roles, and recent activity across the community.">
+        <div class="workspace-eyebrow">PLATFORM MANAGEMENT</div>
+        <section class="workspace-panel">
+            <div class="workspace-panel-heading"><div><span class="panel-kicker">ALL ACCOUNTS · 12,480</span><h2>Community members</h2></div><button class="button button-accent" type="button">Invite a user</button></div>
+            <div class="workspace-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input type="search" placeholder="Search by name or email" aria-label="Search users" /></label><button class="filter-button" type="button">All roles <span aria-hidden="true">⌄</span></button></div>
+            <div class="table-responsive"><table class="workspace-table"><thead><tr><th>Member</th><th>Role</th><th>Joined</th><th>Account status</th><th></th></tr></thead><tbody>
+                <tr><td><strong>Jordan Lee</strong><small>jordan.lee@example.com</small></td><td><span class="role-chip">Player</span></td><td>Nov 04, 2026</td><td><span class="status-dot status-active">Active</span></td><td><a class="row-action" href="/admin">View</a></td></tr>
+                <tr><td><strong>Sam Rivera</strong><small>sam.rivera@example.com</small></td><td><span class="role-chip role-chip-purple">Host</span></td><td>Nov 03, 2026</td><td><span class="status-dot status-active">Active</span></td><td><a class="row-action" href="/admin">View</a></td></tr>
+                <tr><td><strong>Casey Morgan</strong><small>casey.morgan@example.com</small></td><td><span class="role-chip">Player</span></td><td>Oct 28, 2026</td><td><span class="status-dot status-pending">Pending review</span></td><td><a class="row-action" href="/admin">Review</a></td></tr>
+                <tr><td><strong>Taylor Kim</strong><small>taylor.kim@example.com</small></td><td><span class="role-chip role-chip-dark">SuperAdmin</span></td><td>Oct 16, 2026</td><td><span class="status-dot status-active">Active</span></td><td><a class="row-action" href="/admin">View</a></td></tr>
+            </tbody></table></div>
+            <div class="table-footer"><span>Showing 4 of 12,480 members</span><div><button class="filter-button" type="button" disabled>← Previous</button><button class="filter-button" type="button">Next →</button></div></div>
+        </section>
+        <p class="mock-data-note">Sample screen for stage 9 · account actions are visual only.</p>
+    </WorkspaceShell>
+</RoleGuard>
